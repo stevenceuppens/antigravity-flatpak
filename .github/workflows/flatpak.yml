@@ -1,0 +1,32 @@
+name: Build and Validate Flatpaks
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    name: Build ${{ matrix.app-id }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app-id: org.google.Antigravity
+            manifest: antigravity/org.google.Antigravity.yml
+          - app-id: org.google.AntigravityIDE
+            manifest: antigravity-ide/org.google.AntigravityIDE.yml
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Flatpak Builder
+      uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      with:
+        bundle: ${{ matrix.app-id }}.flatpak
+        manifest-path: ${{ matrix.manifest }}
+        cache-key: flatpak-builder-${{ matrix.app-id }}
+        run-tests: false
