@@ -10,6 +10,9 @@ jobs:
   build:
     name: Build ${{ matrix.app-id }}
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-45
+      options: --privileged
     strategy:
       fail-fast: false
       matrix:
@@ -23,11 +26,6 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Install Flatpak and Flatpak Builder
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y flatpak flatpak-builder
-        sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
     - name: Setup Flatpak Builder
       uses: flatpak/flatpak-github-actions/flatpak-builder@v6
