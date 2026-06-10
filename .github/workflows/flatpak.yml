@@ -27,11 +27,13 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y flatpak flatpak-builder
+        sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
     - name: Setup Flatpak Builder
       uses: flatpak/flatpak-github-actions/flatpak-builder@v6
       with:
         bundle: ${{ matrix.app-id }}.flatpak
         manifest-path: ${{ matrix.manifest }}
-        cache-key: flatpak-builder-${{ matrix.app-id }}
+        cache: true
+        cache-key: flatpak-builder-${{ matrix.app-id }}-${{ hashFiles(matrix.manifest) }}
         run-tests: false
